@@ -4,6 +4,8 @@
 
 Lightweight and powerful slider that turns complexity into simplicity! No more dealing with complex markup, loops, or compatibility issues. Just define your images, pick a style, set a container - and MAGIC happens! Built on top of Swiper.js and Fancybox, it handles all the heavy lifting while you enjoy the show.
 
+[View Multiple Demo Builder](https://burakdursun.com/RabbitSlider-Fancwiper/demo/demo.html)
+
 **Why Fancwiper?**
 - 🚀 Zero complexity: No hardcoded markup or loops
 - 🎨 Multiple layouts ready to use
