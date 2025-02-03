@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RabbitSlider Demo</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css">
+    <link rel="stylesheet" href="rabbitSlider.css">
+    <style>
+        .api-section {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+        }
+        .api-section h6 {
+            color: #666;
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 5px;
+        }
+        .btn-group {
+            margin-bottom: 8px;
+        }
+        .form-group {
+            margin-bottom: 8px;
+        }
+        .form-control {
+            font-size: 0.9rem;
+            padding: 4px 8px;
+        }
+        .btn {
+            font-size: 0.9rem;
+            padding: 4px 8px;
+        }
+        .input-group {
+            margin-bottom: 8px;
+        }
+    </style>
+</head>
+<body class="bg-light">
+    <div class="container py-5">
+        <h2 class="mb-4">RabbitSlider Demo</h2>
+        <div class="row">
+            <!-- Slider Area -->
+            <div class="col-lg-8 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div id="sliderContainer"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- API Controls -->
+            <div class="col-lg-4">
+                <div class="api-section">
+                    <h6>Slider Control</h6>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <select class="form-select form-select-sm" id="sliderModel">
+                                <option value="">Select Model</option>
+                                <option value="classic">Classic</option>
+                                <option value="leftThumb">Left Thumbnails</option>
+                                <option value="rightThumb">Right Thumbnails</option>
+                                <option value="grid">Grid</option>
+                                <option value="simple">Simple</option>
+                                <option value="zoom">Zoom</option>
+                            </select>
+                        </div>
+                        <div class="col-6">
+                            <div class="btn-group w-100">
+                                <button class="btn btn-sm btn-success" id="initBtn" onclick="initSlider()">Init</button>
+                                <button class="btn btn-sm btn-danger" id="destroyBtn" onclick="destroySlider()" disabled>Destroy</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h6>Navigation</h6>
+                    <div class="row g-2 mb-3">
+                        <div class="col-6">
+                            <div class="btn-group w-100">
+                                <button class="btn btn-sm btn-primary" onclick="slider.prev()">Prev</button>
+                                <button class="btn btn-sm btn-primary" onclick="slider.next()">Next</button>
+                            </div>
+                        </div>
+                        <div class="col-6">
+                            <div class="input-group input-group-sm">
+                                <input type="number" class="form-control" id="slideIndex" min="0" placeholder="Index">
+                                <button class="btn btn-primary" onclick="slider.slideTo(Number(document.getElementById('slideIndex').value))">Go</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h6>Autoplay</h6>
+                    <div class="row g-2 mb-3">
+                        <div class="col-8">
+                            <div class="input-group input-group-sm">
+                                <input type="number" class="form-control" id="delayInput" value="3000" placeholder="Delay (ms)">
+                                <button class="btn btn-success" onclick="slider.startAutoplay(Number(document.getElementById('delayInput').value))">Start</button>
+                            </div>
+                        </div>
+                        <div class="col-4">
+                            <button class="btn btn-sm btn-danger w-100" onclick="slider.stopAutoplay()">Stop</button>
+                        </div>
+                    </div>
+
+                    <h6>Slide Management</h6>
+                    <div class="row g-2 mb-3">
+                        <div class="col-12">
+                            <div class="input-group input-group-sm">
+                                <input type="number" class="form-control" id="addIndex" placeholder="Add at index (optional)">
+                                <button class="btn btn-success" onclick="addNewSlide()">Add Random</button>
+                            </div>
+                        </div>
+                        <div class="col-12">
+                            <div class="input-group input-group-sm">
+                                <input type="number" class="form-control" id="removeIndex" placeholder="Remove Index">
+                                <button class="btn btn-danger" onclick="removeSlide()">Remove</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <h6>Info</h6>
+                    <div class="btn-group w-100">
+                        <button class="btn btn-sm btn-info" onclick="alert('Current: ' + slider.getCurrentIndex())">Current</button>
+                        <button class="btn btn-sm btn-info" onclick="alert('Total: ' + slider.getTotal())">Total</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@8/swiper-bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+    <script src="rabbitSlider.js"></script>
+    <script>
+        const demoImages = [
+            { large: 'https://placehold.co/600x400/orange/ffffff/png', thumb: 'https://placehold.co/150x100/orange/ffffff/png', title: 'Orange' },
+            { large: 'https://placehold.co/600x400/blue/ffffff/png', thumb: 'https://placehold.co/150x100/blue/ffffff/png', title: 'Blue' },
+            { large: 'https://placehold.co/600x400/red/ffffff/png', thumb: 'https://placehold.co/150x100/red/ffffff/png', title: 'Red' }
+        ];
+
+        const colors = ['pink', 'purple', 'green', 'yellow', 'brown', 'gray', 'black', 'cyan', 'magenta', 'lime'];
+        
+        function getRandomImage() {
+            const color = colors[Math.floor(Math.random() * colors.length)];
+            return {
+                large: `https://placehold.co/600x400/${color}/ffffff/png`,
+                thumb: `https://placehold.co/150x100/${color}/ffffff/png`,
+                title: color.charAt(0).toUpperCase() + color.slice(1)
+            };
+        }
+
+        let slider = null;
+        const container = document.getElementById('sliderContainer');
+        
+        function updateControls(isInit) {
+            document.getElementById('sliderModel').disabled = isInit;
+            document.getElementById('initBtn').disabled = isInit;
+            document.getElementById('destroyBtn').disabled = !isInit;
+        }
+        
+        function initSlider() {
+            const type = document.getElementById('sliderModel').value;
+            if (!type) {
+                alert('Please select a slider model');
+                return;
+            }
+
+            if (!container) {
+                alert('Slider container not found');
+                return;
+            }
+
+            container.innerHTML = '<div class="rabbitSlider"></div>';
+            const element = container.querySelector('.rabbitSlider');
+            element.setAttribute('data-rabbitslider', type);
+
+            slider = new RabbitSlider(element, {
+                images: demoImages,
+                type: type,
+                autoplay: false,
+                lazy: true,
+				thumbsPerView: 5,  // 4 thumbnail göster
+				thumbSpacing: 15   // 15px aralık bırak
+            });
+
+            updateControls(true);
+        }
+
+        function destroySlider() {
+            if (slider) {
+                slider.destroy();
+                slider = null;
+                if (container) {
+                    container.innerHTML = '';
+                }
+                updateControls(false);
+            }
+        }
+
+        function addNewSlide() {
+            if (!slider) return;
+            const index = Number(document.getElementById('addIndex').value);
+            slider.addSlide(getRandomImage(), isNaN(index) ? undefined : index);
+            document.getElementById('addIndex').value = '';
+        }
+
+        function removeSlide() {
+            if (!slider) return;
+            const index = Number(document.getElementById('removeIndex').value);
+            slider.removeSlide(isNaN(index) ? undefined : index);
+            document.getElementById('removeIndex').value = '';
+        }
+
+        updateControls(false);
+    </script>
+</body>
+</html>
